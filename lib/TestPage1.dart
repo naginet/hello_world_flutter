@@ -12,9 +12,10 @@ class TestPage1 extends StatelessWidget {
       body: Center(
         child: TextButton(
           onPressed: () => {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return TestPage2();
-            }))
+            Navigator.of(context).pushNamed("/test2")
+            // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            //   return TestPage2();
+            // }))
           },
           child: Text(
             "進む",
