@@ -31,40 +31,47 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late PageController _pageController;
-  int _selectedIndex = 0;
+  bool flag = false;
 
-  var _pages = [
-    TestPage1(),
-    TestPage2(),
-    TestPage3(),
-  ];
-
-  @override
-  initState() {
-    super.initState();
-    _pageController = PageController(initialPage: _selectedIndex);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }
-
-  void _onPageChanged(int index) {
+  _click() async {
     setState(() {
-      _selectedIndex = index;
+      flag = !flag;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView(
-      controller: _pageController,
-      onPageChanged: _onPageChanged,
-      children: _pages,
-    ));
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            AnimatedContainer(
+                duration: Duration(seconds: 3),
+                width: flag ? 100 : 50,
+                height: flag ? 50 : 100,
+                padding: flag ? EdgeInsets.all(0) : EdgeInsets.all(30),
+                margin: flag ? EdgeInsets.all(0) : EdgeInsets.all(30),
+                transform: flag ? Matrix4.skewX(0.0) : Matrix4.skewX(0.3),
+                color: flag ? Colors.blue : Colors.grey),
+            AnimatedSwitcher(
+              duration: Duration(seconds: 3),
+              child: flag
+                  ? Text("なにもしない")
+                  : Icon(Icons.favorite, color: Colors.pink),
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(onPressed: _click, child: Icon(Icons.add))
+        ],
+      ),
+    );
   }
 }
