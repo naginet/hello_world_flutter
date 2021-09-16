@@ -30,13 +30,38 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  bool flag = false;
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  late AnimationController _animationController;
 
   _click() async {
     setState(() {
-      flag = !flag;
+      _animationController.forward();
     });
+  }
+
+  _stop() async {
+    setState(() {
+      _animationController.stop();
+    });
+  }
+
+  _reverse() async {
+    setState(() {
+      _animationController.reverse();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,27 +74,32 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            AnimatedContainer(
-                duration: Duration(seconds: 3),
-                width: flag ? 100 : 50,
-                height: flag ? 50 : 100,
-                padding: flag ? EdgeInsets.all(0) : EdgeInsets.all(30),
-                margin: flag ? EdgeInsets.all(0) : EdgeInsets.all(30),
-                transform: flag ? Matrix4.skewX(0.0) : Matrix4.skewX(0.3),
-                color: flag ? Colors.blue : Colors.grey),
-            AnimatedSwitcher(
-              duration: Duration(seconds: 3),
-              child: flag
-                  ? Text("なにもしない")
-                  : Icon(Icons.favorite, color: Colors.pink),
-            )
+            SizeTransition(
+              sizeFactor: _animationController,
+              child: Center(
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Container(color: Colors.green),
+                ),
+              ),
+            ),
           ],
         ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(onPressed: _click, child: Icon(Icons.add))
+          FloatingActionButton(
+              onPressed: _click, child: Icon(Icons.arrow_forward)),
+          FloatingActionButton(
+            onPressed: _stop,
+            child: Icon(Icons.pause),
+          ),
+          FloatingActionButton(
+            onPressed: _reverse,
+            child: Icon(Icons.arrow_back),
+          ),
         ],
       ),
     );
